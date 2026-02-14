@@ -1,0 +1,11 @@
+<FilesMatch "^\.env|docker-compose\.yml|Dockerfile|composer\.json">
+Order allow,deny
+Deny from all
+</FilesMatch>
+
+RewriteEngine On
+RewriteRule ^lib(/|$) - [F,L]
+Options -Indexes
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.*)$ $1.php [L]
