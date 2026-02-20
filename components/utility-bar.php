@@ -5,9 +5,14 @@ require_once __DIR__ . '/../lib/Location.php';
 $loc = Location::getInstance();
 $currentLat = $loc->getLat();
 $currentLon = $loc->getLon();
+$currentCity = $loc->getCity();
+$currentPostal = $loc->getPostalCode();
+$currentAddress = $loc->getAddress();
+
+$currentPostal = $currentPostal && strlen($currentPostal) == 5 ? substr($currentPostal, 0, 3) . ' ' . substr($currentPostal, 3) : $currentPostal;
 
 $statusText = $loc->hasCoords()
-  ? "Currently set to: <span class='text-blue-400 font-mono'>$currentLat, $currentLon</span>"
+  ? "Currently set to: <span class='text-blue-400 font-mono'>" . ($currentCity ? ($currentCity . ($currentPostal ? ', ' . $currentPostal : '')) : ($currentAddress ?: "$currentLat, $currentLon")) . "</span>"
   : "No location set. Weather data cannot be fetched.";
 
 $btnHtml = <<<HTML
@@ -20,18 +25,23 @@ $formHtml = <<<HTML
 <form action="/api/location" method="POST" class="flex flex-col gap-4 text-white">
   <div>
     <h2 class="text-xl font-bold">Location Settings</h2>
-    <p class="text-xs text-slate-500">Enter coordinates to track local weather.</p>
+    <p class="text-xs text-slate-500">Enter coordinates or an address to track local weather.</p>
   </div>
 
   <div class="flex gap-2">
     <div class="flex-1">
       <label class="text-[10px] uppercase font-bold text-slate-400">Latitude</label>
-      <input type="number" step="any" name="lat" id="set-lat" value="{$currentLat}" placeholder="e.g. 49.19" class="border p-2 rounded w-full" required>
+      <input type="number" step="any" name="lat" id="set-lat" value="{$currentLat}" placeholder="e.g. 49.19" class="border p-2 rounded w-full">
     </div>
     <div class="flex-1">
       <label class="text-[10px] uppercase font-bold text-slate-400">Longitude</label>
-      <input type="number" step="any" name="lon" id="set-lon" value="{$currentLon}" placeholder="e.g. 16.60" class="border p-2 rounded w-full" required>
+      <input type="number" step="any" name="lon" id="set-lon" value="{$currentLon}" placeholder="e.g. 16.60" class="border p-2 rounded w-full">
     </div>
+  </div>
+
+  <div>
+    <label class="text-[10px] uppercase font-bold text-slate-400">Address / City / Postal Code</label>
+    <input type="text" name="address" id="set-address" placeholder="e.g. Brno, Czech Republic or 60200" class="border p-2 rounded w-full">
   </div>
 
   <button type="button" id="auto-detect-btn" class="text-xs text-blue-600 font-semibold hover:underline text-left">

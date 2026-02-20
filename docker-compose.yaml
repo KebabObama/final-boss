@@ -17,8 +17,11 @@ services:
       MYSQL_ROOT_PASSWORD: ${DB_PASS}
       MYSQL_DATABASE: ${DB_NAME}
     volumes:
-      - db_data:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-
-volumes:
-  db_data:
+      - ./init.sql:/init.sql
+    command: >
+      sh -c "
+        docker-entrypoint.sh mysqld &
+        sleep 10
+        mysql -u root -p$DB_PASS $DB_NAME < /init.sql
+        wait
+      "

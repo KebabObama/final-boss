@@ -2,7 +2,8 @@
 require_once __DIR__ . '/../lib/Auth.php';
 require_once __DIR__ . '/../lib/Weather.php';
 
-$records = Weather::fetchAllByUser();
+
+$records = Weather::fetchAllByUserAndCurrentPosition();
 $latest = $records[0] ?? null;
 $records = array_reverse($records);
 
@@ -56,120 +57,144 @@ if ($latest):
   </section>
 <?php endif; ?>
 
-<canvas id="weatherChart"></canvas>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+  <div>
+    <canvas id="tempChart"></canvas>
+  </div>
+  <div>
+    <canvas id="humidityChart"></canvas>
+  </div>
+  <div>
+    <canvas id="windChart"></canvas>
+  </div>
+</div>
 
 <script>
-  const chart = new Chart(document.getElementById('weatherChart'), {
+  new Chart(document.getElementById('tempChart'), {
+    type: 'line',
     data: {
       labels: <?= json_encode($labels) ?>,
-      datasets: [
-
-        {
-          type: 'line',
-          label: 'average temperature (°C)',
+      datasets: [{
+          label: 'Average (°C)',
           data: <?= json_encode($temps) ?>,
-          yAxisID: 'yTemp',
+          borderColor: '#3b82f6',
+          backgroundColor: 'rgba(59,130,246,0.1)',
           tension: 0.3,
           borderWidth: 2,
         },
         {
-          type: 'line',
-          label: 'Feel temperature (°C)',
+          label: 'Feels Like (°C)',
           data: <?= json_encode($feels) ?>,
-          yAxisID: 'yTemp',
+          borderColor: '#f59e42',
+          backgroundColor: 'rgba(245,158,66,0.1)',
           tension: 0.3,
           borderDash: [5, 5],
         },
         {
-          type: 'line',
-          label: 'Min temperature (°C)',
+          label: 'Min (°C)',
           data: <?= json_encode($tempMin) ?>,
-          yAxisID: 'yTemp',
+          borderColor: '#10b981',
+          backgroundColor: 'rgba(16,185,129,0.1)',
           tension: 0.3,
           borderDash: [2, 2],
         },
         {
-          type: 'line',
-          label: 'Max temperature (°C)',
+          label: 'Max (°C)',
           data: <?= json_encode($tempMax) ?>,
-          yAxisID: 'yTemp',
-          tension: 0.3,
-        },
-
-        {
-          type: 'bar',
-          label: 'Humidity (%)',
-          data: <?= json_encode($humidity) ?>,
-          yAxisID: 'yPercent',
-        },
-        {
-          type: 'bar',
-          label: 'Clouds (%)',
-          data: <?= json_encode($clouds) ?>,
-          yAxisID: 'yPercent',
-        },
-
-        {
-          type: 'line',
-          label: 'Pressure (hPa)',
-          data: <?= json_encode($pressure) ?>,
-          yAxisID: 'yPressure',
-          tension: 0.3,
-        },
-
-        {
-          type: 'line',
-          label: 'Wind speed (m/s)',
-          data: <?= json_encode($windSpeed) ?>,
-          yAxisID: 'yWind',
+          borderColor: '#ef4444',
+          backgroundColor: 'rgba(239,68,68,0.1)',
           tension: 0.3,
         }
-
       ]
     },
     options: {
       responsive: true,
-      interaction: {
-        mode: 'index',
-        intersect: false
+      plugins: {
+        legend: {
+          display: true
+        }
       },
-      stacked: true,
       scales: {
-        yTemp: {
-          type: 'linear',
-          position: 'left',
+        y: {
           title: {
             display: true,
-            text: 'Temperature (°C)',
+            text: 'Temperature (°C)'
           }
-        },
+        }
+      }
+    }
+  });
 
-        yPercent: {
-          type: 'linear',
-          position: 'right',
+  new Chart(document.getElementById('humidityChart'), {
+    type: 'bar',
+    data: {
+      labels: <?= json_encode($labels) ?>,
+      datasets: [{
+          label: 'Humidity (%)',
+          data: <?= json_encode($humidity) ?>,
+          backgroundColor: '#3b82f6',
+        },
+        {
+          label: 'Clouds (%)',
+          data: <?= json_encode($clouds) ?>,
+          backgroundColor: '#64748b',
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          display: true
+        }
+      },
+      scales: {
+        y: {
           title: {
             display: true,
-            text: '%',
-          },
-        },
+            text: '%'
+          }
+        }
+      }
+    }
+  });
 
-        yPressure: {
-          type: 'linear',
-          position: 'right',
+  new Chart(document.getElementById('windChart'), {
+    type: 'line',
+    data: {
+      labels: <?= json_encode($labels) ?>,
+      datasets: [{
+          label: 'Wind Speed (m/s)',
+          data: <?= json_encode($windSpeed) ?>,
+          borderColor: '#6366f1',
+          backgroundColor: 'rgba(99,102,241,0.1)',
+          tension: 0.3,
+        },
+        {
+          label: 'Wind Gust (m/s)',
+          data: <?= json_encode($windGust) ?>,
+          borderColor: '#f43f5e',
+          backgroundColor: 'rgba(244,63,94,0.1)',
+          tension: 0.3,
+          borderDash: [4, 4],
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          display: true
+        }
+      },
+      scales: {
+        y: {
           title: {
             display: true,
-            text: 'hPa',
-          },
-        },
-
-        yWind: {
-          type: 'linear',
-          position: 'right',
-          title: {
-            display: true,
-            text: 'm/s',
-          },
-        },
+            text: 'm/s'
+          }
+        }
       }
     }
   });

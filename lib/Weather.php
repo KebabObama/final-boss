@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/Location.php';
 
 Db::connect(
   getenv('DB_HOST') ?: 'db',
@@ -83,5 +84,26 @@ class Weather
     );
 
     return $result ?: null;
+  }
+
+  public static function fetchAllByUserAndCurrentPosition(): array
+  {
+    $userId = Auth::userId();
+    if (empty($userId)) return [];
+    $loc = Location::getInstance();
+    $lat = $loc->getLat();
+    $lon = $loc->getLon();
+    if ($lat === null || $lon === null) return [];
+
+    $tolerance = 0.0001;
+    $records = Db::queryAll(
+      "SELECT * FROM weather WHERE user_id = ? ORDER BY created_at DESC",
+      $userId
+    ) ?: [];
+    return array_values(array_filter($records, function ($row) use ($lat, $lon, $tolerance) {
+      return isset($row['latitude'], $row['longitude']) &&
+        abs($row['latitude'] - $lat) < $tolerance &&
+        abs($row['longitude'] - $lon) < $tolerance;
+    }));
   }
 }
