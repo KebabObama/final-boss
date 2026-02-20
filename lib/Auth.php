@@ -50,8 +50,10 @@ class Auth
     if ($email === '' || $password === '')
       return "Required fields cannot be empty.";
 
-    $hash = password_hash($password, PASSWORD_DEFAULT);
+    if (Db::queryOne("SELECT id FROM users WHERE email = ?", $email))
+      return "Email is already in use.";
 
+    $hash = password_hash($password, PASSWORD_DEFAULT);
     try {
       Db::insert('users', [
         'email'     => $email,
@@ -63,9 +65,7 @@ class Auth
 
       return true;
     } catch (PDOException $e) {
-      return $e->getCode() === '23000' ?
-        "Email is already in use." :
-        "Registration failed: " . $e->getMessage();
+      return "Registration failed: " . $e->getMessage();
     }
   }
 

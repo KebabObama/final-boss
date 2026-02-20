@@ -10,7 +10,7 @@ class Popup
   public function __construct(
     string $buttonHtml,
     string $contentHtml,
-    string $dialogClass = 'absolute left-1/2 top-1/2 -translate-x-1/2 container -translate-y-1/2 rounded-xl p-4 border-2 bg-slate-800 text-white'
+    string $dialogClass = 'absolute left-1/2 top-1/2 -translate-x-1/2 w-lg -translate-y-1/2 rounded-xl p-4 border-2 bg-slate-800 text-white'
   ) {
     $this->id = str_replace('.', '_', uniqid('p_', true));
     $this->buttonHtml = $buttonHtml;
