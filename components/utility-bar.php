@@ -5,14 +5,11 @@ require_once __DIR__ . '/../lib/Location.php';
 $loc = Location::getInstance();
 $currentLat = $loc->getLat();
 $currentLon = $loc->getLon();
-$currentCity = $loc->getCity();
-$currentPostal = $loc->getPostalCode();
 $currentAddress = $loc->getAddress();
 
-$currentPostal = $currentPostal && strlen($currentPostal) == 5 ? substr($currentPostal, 0, 3) . ' ' . substr($currentPostal, 3) : $currentPostal;
 
 $statusText = $loc->hasCoords()
-  ? "Currently set to: <span class='text-blue-400 font-mono'>" . ($currentCity ? ($currentCity . ($currentPostal ? ', ' . $currentPostal : '')) : ($currentAddress ?: "$currentLat, $currentLon")) . "</span>"
+  ? "Currently set to: <span class='text-blue-400 font-mono'>" . ($currentAddress ?: "$currentLat, $currentLon") . "</span>"
   : "No location set. Weather data cannot be fetched.";
 
 $btnHtml = <<<HTML
