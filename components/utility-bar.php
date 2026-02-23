@@ -9,7 +9,7 @@ $currentAddress = $loc->getAddress();
 
 
 $statusText = $loc->hasCoords()
-  ? "Currently set to: <span class='text-blue-400 font-mono'>" . ($currentAddress ?: "$currentLat, $currentLon") . "</span>"
+  ? "Currently set to: <span class='text-blue-400 font-mono font-semibold'>" . ($currentAddress ?: "$currentLat, $currentLon") . "</span>"
   : "No location set. Weather data cannot be fetched.";
 
 $btnHtml = <<<HTML
@@ -73,7 +73,7 @@ $locationPopup = new Popup($btnHtml, $formHtml);
 ?>
 
 <div class="bg-slate-800 p-4 gap-4 rounded-xl border border-slate-700 flex flex-col md:flex-row justify-between items-center">
-  <p class="text-sm text-slate-300"><?= $statusText ?></p>
+  <p class="text-sm text-slate-300 md:truncate"><?= $statusText ?></p>
   <div class="grid grid-cols-2 w-full md:w-auto gap-4">
     <?= $locationPopup->render() ?>
     <button

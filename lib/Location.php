@@ -43,7 +43,7 @@ class Location
     $userId = Auth::userId();
     if (!$userId) return;
     $row = Db::queryOne(
-      'SELECT latitude, longitude, city, postal_code, address FROM users WHERE id = ?',
+      'SELECT latitude, longitude, address FROM users WHERE id = ?',
       $userId
     );
     if (!$row) return;
@@ -77,26 +77,16 @@ class Location
 
   private function geocode(string $query): ?array
   {
-    $url = 'https://nominatim.openstreetmap.org/search?format=json&q=' . urlencode($query) . '&limit=1';
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_USERAGENT, 'FinalBossWeatherApp/1.0');
-    $response = curl_exec($ch);
-    curl_close($ch);
-
+    $url = sprintf(
+      'https://nominatim.openstreetmap.org/search?format=json&q=%s&limit=1',
+      urlencode($query)
+    );
+    $response = @file_get_contents($url, false);
     $data = json_decode($response, true);
-    if (empty($data)) {
-      return null;
-    }
-
-    $result = $data[0];
-    return [
-      'lat' => (float)$result['lat'],
-      'lon' => (float)$result['lon'],
-      'display_name' => $result['display_name'],
-      'city' => $result['address']['city'] ?? $result['address']['town'] ?? $result['address']['village'] ?? null,
-      'postal_code' => $result['address']['postcode'] ?? null
+    return empty($data) ? null : [
+      'lat' => (float)$data[0]['lat'],
+      'lon' => (float)$data[0]['lon'],
+      'display_name' => $data[0]['display_name'],
     ];
   }
 

@@ -13,5 +13,5 @@ if ($result === true) {
   exit;
 }
 
-header('Location: /?auth_error=' . urlencode($result));
+header('Location: /?error=' . urlencode($result));
 exit;

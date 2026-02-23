@@ -7,6 +7,12 @@
     specifically for your GPS coordinates.
   </p>
   <div class="inline-block bg-slate-800 p-8 rounded-2xl shadow-2xl border border-slate-700">
-    <p class="text-slate-300">Please <strong>Login</strong> or <strong>Register</strong> to view your personalized weather dashboard.</p>
+    <p class="text-slate-300 inline-block">Please
+      <?php
+      require_once __DIR__ . '/auth-forms.php';
+      echo (new Popup('<button class="text-white font-bold cursor-pointer">Login</button>', $loginForm))->render() . ' or ' .
+        (new Popup('<button class="text-white font-bold cursor-pointer">register</button>', $regForm))->render();
+      ?>
+      to view your personalized weather dashboard.</p>
   </div>
 </section>

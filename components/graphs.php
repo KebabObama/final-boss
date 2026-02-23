@@ -2,9 +2,8 @@
 require_once __DIR__ . '/../lib/Auth.php';
 require_once __DIR__ . '/../lib/Weather.php';
 
-
 $records = Weather::fetchAllByUserAndCurrentPosition();
-$latest = $records[0] ?? null;
+
 $records = array_reverse($records);
 
 $feels = [];
@@ -29,7 +28,7 @@ foreach ($records as $row) {
   $visibility[]  = $row['visibility'];
 }
 
-if ($latest):
+if (isset($records[0])):
   $metrics = [
     ['label' => 'Temperature', 'key' => 'temp',       'unit' => '°C'],
     ['label' => 'Humidity',    'key' => 'humidity',   'unit' => '%'],
@@ -40,7 +39,6 @@ if ($latest):
   ];
 ?>
   <section class="grid w-full grid-cols-2 md:grid-cols-3 gap-6 p-6 border border-slate-700 rounded-2xl shadow-xl bg-slate-800">
-
     <?php foreach ($metrics as $metric): ?>
       <div class="flex flex-col gap-1">
         <span class="text-slate-400 text-xs uppercase tracking-wider font-semibold">
@@ -48,7 +46,7 @@ if ($latest):
         </span>
         <div class="flex items-baseline gap-1">
           <span class="text-2xl font-bold text-white">
-            <?= htmlspecialchars($latest[$metric['key']]) ?>
+            <?= htmlspecialchars($records[0][$metric['key']]) ?>
           </span>
           <span class="text-slate-400"><?= $metric['unit'] ?></span>
         </div>
@@ -60,13 +58,13 @@ if ($latest):
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
   <div>
-    <canvas id="tempChart"></canvas>
+    <canvas class="w-full" id="tempChart"></canvas>
   </div>
   <div>
-    <canvas id="humidityChart"></canvas>
+    <canvas class="w-full" id="humidityChart"></canvas>
   </div>
   <div>
-    <canvas id="windChart"></canvas>
+    <canvas class="w-full" id="windChart"></canvas>
   </div>
 </div>
 

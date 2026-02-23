@@ -11,14 +11,14 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style type="text/tailwindcss">
     .button {
-      @apply px-4 py-2 rounded transition font-semibold border border-slate-600;
+      @apply px-4 py-2 rounded transition font-semibold border border-slate-600 cursor-pointer;
     }
   </style>
 </head>
 
 <body class="text-white min-h-screen font-sans bg-slate-800 overflow-hidden md:p-2">
   <nav class="px-2 h-16 flex justify-between items-center shadow-xl bg-slate-800">
-    <h1 class="text-lg md:text-2xl font-bold tracking-tight text-blue-400">Final Boss XD</h1>
+    <h1 class="text-lg md:text-2xl font-extrabold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">Final Boss XD</h1>
     <div class="flex items-center gap-4">
       <?php include './components/auth-controls.php'; ?>
     </div>
@@ -34,6 +34,7 @@
       endif;
       ?>
     </main>
+    <?php include __DIR__ . '/components/message.php'; ?>
   </div>
 
 </body>

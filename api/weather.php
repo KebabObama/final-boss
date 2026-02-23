@@ -7,6 +7,7 @@ require_once __DIR__ . '/../lib/Weather.php';
 
 if (!Auth::isLoggedIn()) {
   http_response_code(401);
+  header("Location: /");
   exit;
 }
 
@@ -14,6 +15,7 @@ $location = Location::getInstance();
 
 if (!$location->hasCoords()) {
   http_response_code(400);
+  header("Location: /");
   exit;
 }
 
