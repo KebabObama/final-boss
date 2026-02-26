@@ -1,27 +1,27 @@
 services:
   php-server:
     build: .
+    container_name: php-apache
+    restart: always
     ports:
-      - "8080:80"
-    volumes:
-      - .:/var/www/html
-    env_file: .env
+      - "80:80"
+    env_file:
+      - .env
     depends_on:
       - db
 
   db:
     image: mysql:8.0
-    ports:
-      - "${DB_PORT}:3306"
+    container_name: mysql-db
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASS}
       MYSQL_DATABASE: ${DB_NAME}
     volumes:
-      - ./init.sql:/init.sql
-    command: >
-      sh -c "
-        docker-entrypoint.sh mysqld &
-        sleep 10
-        mysql -u root -p$DB_PASS $DB_NAME < /init.sql
-        wait
-      "
+      - db_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3306:3306"
+
+volumes:
+  db_data:
