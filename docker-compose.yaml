@@ -15,20 +15,20 @@ services:
       - ./certs:/etc/apache2/ssl
     working_dir: /var/www/html
 
-db:
-  image: mariadb:10.11
-  container_name: mysql-db
-  restart: always
-  environment:
-    MARIADB_ROOT_PASSWORD: ${DB_PASS}
-    MARIADB_DATABASE: ${DB_NAME}
-    MARIADB_USER: ${DB_USER}
-    MARIADB_PASSWORD: ${DB_PASS}
-  volumes:
-    - db_data:/var/lib/mysql
-    - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-  ports:
-    - "3306:3306"
+  db:
+    image: mariadb:10.11
+    container_name: mysql-db
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_PASS}
+      MARIADB_DATABASE: ${DB_NAME}
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: ${DB_PASS}
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3306:3306"
 
 volumes:
   db_data:
