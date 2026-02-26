@@ -9,8 +9,8 @@ $password = $_POST['password'] ?? '';
 $result = Auth::register($email, $password);
 
 if ($result === true) {
-  header('Location: /');
-  exit;
+    header('Location: /');
+    exit;
 }
 
 header('Location: /?error=' . urlencode($result));

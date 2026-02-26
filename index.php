@@ -27,12 +27,12 @@
     <main class="flex flex-col gap-6 container mx-auto p-6">
       <?php
       if (Auth::isLoggedIn()):
-        include './components/utility-bar.php';
-        include './components/graphs.php';
+          include './components/utility-bar.php';
+          include './components/graphs.php';
       else:
-        include './components/landing.php';
+          include './components/landing.php';
       endif;
-      ?>
+?>
     </main>
     <?php include __DIR__ . '/components/message.php'; ?>
   </div>
