@@ -81,7 +81,19 @@ class Location
       'https://nominatim.openstreetmap.org/search?format=json&q=%s&limit=1',
       urlencode($query)
     );
-    $response = @file_get_contents($url, false);
+
+    $opts = [
+      "http" => [
+        "header" => "User-Agent: MyApp/1.0\r\n"
+      ],
+      "ssl" => [
+        "verify_peer" => true,
+        "verify_peer_name" => true
+      ]
+    ];
+    $context = stream_context_create($opts);
+    $response = @file_get_contents($url, false, $context);
+
     $data = json_decode($response, true);
     return empty($data) ? null : [
       'lat' => (float)$data[0]['lat'],

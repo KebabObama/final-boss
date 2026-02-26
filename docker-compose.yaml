@@ -5,10 +5,15 @@ services:
     restart: always
     ports:
       - "80:80"
+      - "443:443"
     env_file:
       - .env
     depends_on:
       - db
+    volumes:
+      - ./:/var/www/html
+      - ./certs:/etc/apache2/ssl
+    working_dir: /var/www/html
 
   db:
     image: mysql:8.0

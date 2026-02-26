@@ -1,5 +1,10 @@
 FROM php:8.2-apache
 
 RUN docker-php-ext-install pdo_mysql
+RUN a2enmod rewrite ssl
+COPY apache-ssl.conf /etc/apache2/sites-available/default-ssl.conf
+RUN a2ensite default-ssl.conf
+RUN chown -R www-data:www-data /var/www/html \
+  && chmod -R 755 /var/www/html
 
-RUN a2enmod rewrite
+EXPOSE 80 443
